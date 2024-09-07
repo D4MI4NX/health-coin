@@ -1,14 +1,17 @@
 using Exiled.API.Features;
-using Exiled.Events.EventArgs;
 using Exiled.Events.EventArgs.Player;
-using UnityEngine;
 using Players = Exiled.Events.Handlers.Player;
 
 namespace HealthCoin
 {
     public class GenHandler
     {
-        private readonly Config.Config? config;
+        private readonly HealthCoin hc;
+
+        public GenHandler(HealthCoin pluginInstance)
+        {
+            hc = pluginInstance;
+        }
 
         public void Start()
         {
@@ -22,17 +25,27 @@ namespace HealthCoin
 
         public void OnCoin(FlippingCoinEventArgs ev)
         {
+            int healAmount = hc.Config.AmntHeal;
+            int damageAmount = hc.Config.AmntDamage;
+
             Log.Info("Threw coin");
+
+            ev.Player.ClearBroadcasts();
 
             if (ev.IsTails)
             {
-                ev.Player.Health += 50;
-                ev.Player.Broadcast(5, $"The coin gave you 50 HP!");
+                ev.Player.Health += healAmount;
+                ev.Player.Broadcast(5, string.Format("The coin gave you {0} HP!", healAmount));
+
             }
             else
             {
-                ev.Player.Health -= 50;
-                ev.Player.Broadcast(5, $"The coin took 50 HP from you!");
+                ev.Player.Health -= damageAmount;
+                ev.Player.Broadcast(5, string.Format("The coin took {0} HP from you!", damageAmount));
+                if (ev.Player.Health <= 0)
+                {
+                    ev.Player.Kill("Unlucky!");
+                }
             }
         }
     }

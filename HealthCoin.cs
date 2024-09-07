@@ -1,4 +1,5 @@
-﻿using Exiled.API.Features;
+﻿using System.ComponentModel;
+using Exiled.API.Features;
 
 namespace HealthCoin
 {
@@ -8,7 +9,7 @@ namespace HealthCoin
         public override string Name => "Health Coin";
     
         /// <inheritdoc>
-        public override string Prefix => "HC";
+        public override string Prefix => "health_coin";
         
         /// <inheritdoc>
         public override string Author => "D4MI4NX";
@@ -19,13 +20,12 @@ namespace HealthCoin
         /// <inheritdoc>
         public override Version RequiredExiledVersion => new Version(8, 9, 11);
 
-        public GenHandler? Handler { get; private set; }
 
-        
+        public GenHandler? Handler { get; private set; }
 
         public override void OnEnabled()
         {
-            Handler = new GenHandler();
+            Handler = new GenHandler(this);
             Handler.Start();
 
             base.OnEnabled();
@@ -34,9 +34,17 @@ namespace HealthCoin
         /// <inheritdoc>
         public override void OnDisabled()
         {
-            Handler.Stop();
+            if (Handler != null)
+            {
+                Handler.Stop();
+            }
 
             base.OnDisabled();
+        }
+
+        public static implicit operator HealthCoin(GenHandler v)
+        {
+            throw new NotImplementedException();
         }
     }
 }
