@@ -8,8 +8,8 @@ namespace HealthCoin.Config
 
         public bool Debug { get; set; } = false;
 
-        public int AmntHeal { get; set; } = 50;
+        public int AmntHeal { get; set; } = 25;
 
-        public int AmntDamage { get; set; } = 50;
+        public int AmntDamage { get; set; } = 25;
     }
 }
